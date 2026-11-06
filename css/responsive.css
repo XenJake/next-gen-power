@@ -1,0 +1,24 @@
+@media (max-width: 1100px) {
+  .feature-grid,
+  .vehicle-grid,
+  .story-grid,
+  .service-grid,
+  .ownership-grid,
+  .charging-grid,
+  .footer-grid,
+  .gallery-grid,
+  .detail-grid,
+  .config-grid,
+  .summary-grid,
+  .locations-grid,
+  .expanded-layout,
+  .editorial-split,
+  .vehicle-hero,
+  .detail-layout,
+  .contact-layout,
+  .account-layout,
+  .configurator-shell,
+  .footer-links {
+    grid-template-columns: 1fr;
+  }
+}

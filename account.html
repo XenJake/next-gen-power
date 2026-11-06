@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="My Aurelle account dashboard." />
+    <title>AURELLE | My Aurelle</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body data-page="account">
+    <header class="site-header"><nav class="nav" aria-label="Main navigation"><a href="index.html" class="brand" aria-label="AURELLE home"><span class="brand-mark"><img src="assets/logo.svg" alt="AURELLE emblem" /></span><span class="brand-word">AURELLE</span></a><div class="nav-links"><a href="vehicles.html">Vehicles</a><a href="charging.html">Charging</a><a href="ownership.html">Ownership</a><a href="about.html">Our Story</a></div><div class="nav-actions"><button type="button" class="icon-button" data-account-trigger aria-label="Account access"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg></button><a href="configurator.html" class="btn btn-primary">Configure Yours</a></div><button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button></nav><div class="mobile-menu"><a href="vehicles.html">Vehicles</a><a href="charging.html">Charging</a><a href="ownership.html">Ownership</a><a href="about.html">Our Story</a><a href="account.html">Account</a><a href="configurator.html" class="btn btn-primary">Configure Yours</a></div></header>
+    <main>
+      <section class="page-hero hero-account"><div class="container page-hero-inner reveal"><p class="eyebrow">My Aurelle</p><h1>Welcome back.</h1><p>Your personal mobility profile, saved configurations and ownership preferences.</p></div></section>
+      <section class="section"><div class="container account-layout reveal"><div class="account-panel"><div class="auth-toggle"><button type="button" class="tab-button active" data-auth-tab="signin">Sign in</button><button type="button" class="tab-button" data-auth-tab="register">Register</button></div><form id="signin-form" class="auth-form"><label><span>Email</span><input type="email" name="email" required /></label><label><span>Password</span><input type="password" name="password" required /></label><button type="submit" class="btn btn-primary">Sign in</button></form><form id="register-form" class="auth-form hidden"><label><span>Full name</span><input type="text" name="fullName" required /></label><label><span>Email</span><input type="email" name="email" required /></label><label><span>Password</span><input type="password" name="password" required /></label><button type="submit" class="btn btn-primary">Create account</button></form></div><div class="account-panel account-summary-box"><div><p class="eyebrow subdued">Account overview</p><h2 id="account-name">Aurelle Member</h2></div><p id="account-email">member@aurelle.com</p><div><h3>Saved vehicle configurations</h3><ul id="saved-configurations-list" class="checklist" style="margin-top: 1rem;"></ul></div><div><h3>Vehicle enquiries</h3><ul id="saved-enquiries-list" class="checklist" style="margin-top: 1rem;"></ul></div></div></div></section>
+    </main>
+    <footer class="site-footer"><div class="container footer-grid"><div><a href="index.html" class="brand footer-brand"><span class="brand-mark"><img src="assets/logo.svg" alt="AURELLE emblem" /></span><span class="brand-word">AURELLE</span></a><p>Luxury electric mobility. Ghanaian origin. Global ambition.</p></div><div class="footer-links"><div><h4>Explore</h4><a href="vehicles.html">Vehicles</a><a href="charging.html">Charging</a><a href="ownership.html">Ownership</a><a href="about.html">Our Story</a></div><div><h4>Company</h4><a href="contact.html">Contact</a><a href="account.html">Account</a><a href="#">Privacy Policy</a><a href="#">Terms</a></div></div><div class="socials"><h4>Follow</h4><div class="social-icons"><a href="#">◎</a><a href="#">◌</a><a href="#">X</a></div><p>Ghana / International</p></div></div></footer>
+    <script src="js/main.js"></script>
+    <script src="js/interactions.js"></script>
+  </body>
+</html>

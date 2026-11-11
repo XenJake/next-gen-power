@@ -13,8 +13,8 @@ class ChargerInline(admin.TabularInline):
 
 @admin.register(ChargingStation)
 class ChargingStationAdmin(admin.ModelAdmin):
-	list_display = ['name', 'city', 'region', 'status', 'is_demo', 'is_published']
-	list_filter = ['status', 'city', 'is_demo', 'is_published']
+	list_display = ['name', 'site_type', 'city', 'region', 'status', 'is_demo', 'is_published']
+	list_filter = ['site_type', 'status', 'city', 'is_demo', 'is_published']
 	search_fields = ['name', 'address', 'city', 'region']
 	prepopulated_fields = {'slug': ['name']}
 	inlines = [ChargerInline]
@@ -22,8 +22,8 @@ class ChargingStationAdmin(admin.ModelAdmin):
 
 @admin.register(Charger)
 class ChargerAdmin(admin.ModelAdmin):
-	list_display = ['charger_code', 'station', 'connector_type', 'max_power_kw', 'status', 'is_demo', 'last_heartbeat_at', 'qr_links']
-	list_filter = ['status', 'connector_type', 'is_demo', 'station__city']
+	list_display = ['charger_code', 'station', 'power_type', 'connector_type', 'max_power_kw', 'status', 'is_demo', 'last_heartbeat_at', 'qr_links']
+	list_filter = ['power_type', 'status', 'connector_type', 'is_demo', 'station__city']
 	search_fields = ['charger_code', 'external_reference', 'station__name']
 	readonly_fields = ['public_id', 'last_heartbeat_at']
 

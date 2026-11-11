@@ -9,7 +9,7 @@ class ChargerStatusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Charger
-        fields = ['public_id', 'charger_code', 'connector_type', 'max_power_kw', 'status', 'status_label', 'station_name', 'last_heartbeat_at']
+        fields = ['public_id', 'charger_code', 'power_type', 'connector_type', 'max_power_kw', 'status', 'status_label', 'station_name', 'last_heartbeat_at']
 
 
 class StationSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class StationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ChargingStation
-        fields = ['name', 'slug', 'address', 'city', 'region', 'latitude', 'longitude', 'status', 'available_chargers', 'charger_count', 'solar_capacity_kw', 'battery_storage_kwh']
+        fields = ['name', 'slug', 'site_type', 'address', 'city', 'region', 'latitude', 'longitude', 'status', 'available_chargers', 'charger_count', 'solar_capacity_kw', 'battery_storage_kwh', 'is_demo']
 
     def get_available_chargers(self, station):
         return station.chargers.filter(status=Charger.Status.AVAILABLE).count()

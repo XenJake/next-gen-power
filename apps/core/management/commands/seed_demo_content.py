@@ -53,39 +53,104 @@ class Command(BaseCommand):
                 },
             )
 
-        station_data = [
-            ('Demo Accra Central', 'demo-accra-central', 'Demonstration coordinates near Accra Central', 'Accra', 'Greater Accra', Decimal('5.6037'), Decimal('-0.1870'), 'DEMO-AC-01', 'CCS2', Decimal('120'), Charger.Status.AVAILABLE),
-            ('Demo Tema Roadside', 'demo-tema-roadside', 'Demonstration coordinates near Tema', 'Tema', 'Greater Accra', Decimal('5.6698'), Decimal('0.0166'), 'DEMO-TE-01', 'CCS2', Decimal('180'), Charger.Status.IN_USE),
-            ('Demo Kumasi Hub', 'demo-kumasi-hub', 'Demonstration coordinates near Kumasi', 'Kumasi', 'Ashanti', Decimal('6.6885'), Decimal('-1.6244'), 'DEMO-KU-01', 'CCS2', Decimal('120'), Charger.Status.OFFLINE),
-            ('Demo Cape Coast Point', 'demo-cape-coast-point', 'Demonstration coordinates near Cape Coast', 'Cape Coast', 'Central', Decimal('5.1053'), Decimal('-1.2466'), 'DEMO-CC-01', 'Type 2', Decimal('22'), Charger.Status.OUT_OF_SERVICE),
+        mall_hotel_office_sites = [
+            {
+                'name': 'Demo Accra Mall', 'slug': 'demo-accra-mall',
+                'address': 'Tetteh Quarshie Road, Accra', 'city': 'Accra', 'region': 'Greater Accra',
+                'site_type': ChargingStation.SiteType.MALL,
+                'latitude': Decimal('5.6221843'), 'longitude': Decimal('-0.1729361'),
+            },
+            {
+                'name': 'Demo West Hills Mall', 'slug': 'demo-west-hills-mall',
+                'address': 'New Weija, Ga South, Greater Accra', 'city': 'Accra', 'region': 'Greater Accra',
+                'site_type': ChargingStation.SiteType.MALL,
+                'latitude': Decimal('5.5447144'), 'longitude': Decimal('-0.3438056'),
+            },
+            {
+                'name': 'Demo Atlantic Mall', 'slug': 'demo-atlantic-mall',
+                'address': 'Kofi Annan East Avenue, North Legon, Accra', 'city': 'Accra', 'region': 'Greater Accra',
+                'site_type': ChargingStation.SiteType.MALL,
+                'latitude': Decimal('5.6679935'), 'longitude': Decimal('-0.1781440'),
+            },
+            {
+                'name': 'Demo Labadi Beach Hotel', 'slug': 'demo-labadi-beach-hotel',
+                'address': 'La Road, La, Accra', 'city': 'Accra', 'region': 'Greater Accra',
+                'site_type': ChargingStation.SiteType.HOTEL,
+                'latitude': Decimal('5.5639522'), 'longitude': Decimal('-0.1380137'),
+            },
+            {
+                'name': 'Demo One Airport Square', 'slug': 'demo-one-airport-square',
+                'address': 'South Liberation Link, Airport City, Accra', 'city': 'Accra', 'region': 'Greater Accra',
+                'site_type': ChargingStation.SiteType.OFFICE,
+                'latitude': Decimal('5.6007783'), 'longitude': Decimal('-0.1772592'),
+            },
         ]
-        for name, slug, address, city, region, latitude, longitude, code, connector, power, status in station_data:
+        highway_sites = [
+            {
+                'name': 'Demo Accra-Kumasi Highway Hub - Suhum', 'slug': 'demo-accra-kumasi-suhum',
+                'address': 'Demonstration service area near Suhum on the Accra-Kumasi corridor',
+                'city': 'Suhum', 'region': 'Eastern', 'site_type': ChargingStation.SiteType.HIGHWAY,
+                'latitude': Decimal('6.0358850'), 'longitude': Decimal('-0.4552751'), 'dc_chargers': 3,
+            },
+            {
+                'name': 'Demo Accra-Cape Coast Highway Hub - Winneba', 'slug': 'demo-accra-cape-coast-winneba',
+                'address': 'Demonstration service area near Winneba on the Accra-Cape Coast corridor',
+                'city': 'Winneba', 'region': 'Central', 'site_type': ChargingStation.SiteType.HIGHWAY,
+                'latitude': Decimal('5.3500600'), 'longitude': Decimal('-0.6213400'), 'dc_chargers': 2,
+            },
+        ]
+        status_cycle = [
+            Charger.Status.AVAILABLE,
+            Charger.Status.AVAILABLE,
+            Charger.Status.IN_USE,
+            Charger.Status.OFFLINE,
+            Charger.Status.OUT_OF_SERVICE,
+            Charger.Status.MAINTENANCE,
+            Charger.Status.AVAILABLE,
+            Charger.Status.IN_USE,
+            Charger.Status.FAULTED,
+            Charger.Status.AVAILABLE,
+        ]
+        for site in [*mall_hotel_office_sites, *highway_sites]:
+            is_highway = site['site_type'] == ChargingStation.SiteType.HIGHWAY
             station, _ = ChargingStation.objects.update_or_create(
-                slug=slug,
+                slug=site['slug'],
                 defaults={
-                    'name': name,
-                    'address': address,
-                    'city': city,
-                    'region': region,
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    'opening_hours': 'Illustrative hours: 06:00-22:00',
-                    'amenities': 'Demonstration content. This is not a live operating station.',
+                    'name': site['name'],
+                    'address': site['address'],
+                    'site_type': site['site_type'],
+                    'city': site['city'],
+                    'region': site['region'],
+                    'latitude': site['latitude'],
+                    'longitude': site['longitude'],
+                    'opening_hours': 'Illustrative host-site hours; confirm with the property.' if not is_highway else 'Illustrative 24-hour service area; not an operating site.',
+                    'amenities': 'Demonstration location only. No NEXT GEN POWER charging equipment is deployed here.',
                     'status': ChargingStation.Status.OPERATIONAL,
                     'is_published': True,
                     'is_demo': True,
                 },
             )
-            Charger.objects.update_or_create(
-                station=station,
-                charger_code=code,
-                defaults={
-                    'connector_type': connector,
-                    'max_power_kw': power,
-                    'status': status,
-                    'is_demo': True,
-                },
-            )
+            charger_total = site.get('dc_chargers', 0) if is_highway else 10
+            for index in range(charger_total):
+                power_type = Charger.PowerType.DC if is_highway else Charger.PowerType.AC
+                charger_number = index + 1
+                Charger.objects.update_or_create(
+                    station=station,
+                    charger_code=f'{"DC" if is_highway else "AC"}-{charger_number:02d}',
+                    defaults={
+                        'power_type': power_type,
+                        'connector_type': 'CCS2' if is_highway else 'Type 2',
+                        'max_power_kw': Decimal('88') if is_highway else Decimal('22'),
+                        'status': status_cycle[index % len(status_cycle)],
+                        'is_demo': True,
+                    },
+                )
 
-        self.stdout.write(self.style.SUCCESS('Loaded 3 illustrative BYD listings and 4 demonstration charging sites.'))
-        self.stdout.write('Demo prices, specifications, coordinates and charger statuses are illustrative only.')
+        ChargingStation.objects.filter(
+            slug__in=['demo-accra-central', 'demo-tema-roadside', 'demo-kumasi-hub', 'demo-cape-coast-point'],
+            is_demo=True,
+        ).update(is_published=False)
+
+        self.stdout.write(self.style.SUCCESS('Loaded 3 illustrative BYD listings and 7 illustrative charging host sites.'))
+        self.stdout.write('Demo inventory: 50 x 22 kW Type 2 AC chargers, 3 x 88 kW CCS2 chargers near Suhum and 2 x 88 kW CCS2 chargers near Winneba.')
+        self.stdout.write('All prices, vehicle details, coordinates, locations and charger statuses are illustrative only.')

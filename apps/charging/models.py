@@ -7,6 +7,13 @@ from django.urls import reverse
 
 
 class ChargingStation(models.Model):
+	class SiteType(models.TextChoices):
+		MALL = 'mall', 'Shopping mall'
+		HOTEL = 'hotel', 'Hotel'
+		OFFICE = 'office', 'Office building'
+		HIGHWAY = 'highway', 'Highway charging hub'
+		OTHER = 'other', 'Other'
+
 	class Status(models.TextChoices):
 		OPERATIONAL = 'operational', 'Operational'
 		LIMITED = 'limited', 'Limited service'
@@ -15,6 +22,7 @@ class ChargingStation(models.Model):
 	name = models.CharField(max_length=160)
 	slug = models.SlugField(unique=True)
 	address = models.CharField(max_length=240)
+	site_type = models.CharField(max_length=16, choices=SiteType.choices, default=SiteType.OTHER)
 	city = models.CharField(max_length=100)
 	region = models.CharField(max_length=100, blank=True)
 	latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
@@ -41,6 +49,10 @@ class ChargingStation(models.Model):
 
 
 class Charger(models.Model):
+	class PowerType(models.TextChoices):
+		AC = 'ac', 'AC'
+		DC = 'dc', 'DC'
+
 	class Status(models.TextChoices):
 		AVAILABLE = 'available', 'Available'
 		IN_USE = 'in_use', 'Occupied'
@@ -52,6 +64,7 @@ class Charger(models.Model):
 	station = models.ForeignKey(ChargingStation, on_delete=models.PROTECT, related_name='chargers')
 	public_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 	charger_code = models.CharField(max_length=80)
+	power_type = models.CharField(max_length=2, choices=PowerType.choices, default=PowerType.AC)
 	connector_type = models.CharField(max_length=80)
 	max_power_kw = models.DecimalField(max_digits=7, decimal_places=2)
 	status = models.CharField(max_length=16, choices=Status.choices, default=Status.OFFLINE)

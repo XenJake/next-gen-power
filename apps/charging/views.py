@@ -30,12 +30,15 @@ def station_list(request):
 	query = request.GET.get('q', '').strip()
 	city = request.GET.get('city', '').strip()
 	status = request.GET.get('status', '').strip()
+	site_type = request.GET.get('site_type', '').strip()
 	if query:
 		stations = stations.filter(Q(name__icontains=query) | Q(city__icontains=query) | Q(region__icontains=query))
 	if city:
 		stations = stations.filter(city__iexact=city)
 	if status in Charger.Status.values:
 		stations = stations.filter(chargers__status=status).distinct()
+	if site_type in ChargingStation.SiteType.values:
+		stations = stations.filter(site_type=site_type)
 	map_data = []
 	for station in stations:
 		chargers = list(station.chargers.all())
@@ -43,6 +46,7 @@ def station_list(request):
 			continue
 		map_data.append({
 			'name': station.name,
+			'site_type': station.get_site_type_display(),
 			'city': station.city,
 			'address': station.address,
 			'latitude': float(station.latitude),
@@ -52,6 +56,7 @@ def station_list(request):
 			'available': sum(charger.status == Charger.Status.AVAILABLE for charger in chargers),
 			'charger_count': len(chargers),
 			'statuses': [charger.get_status_display() for charger in chargers],
+			'equipment': [f'{charger.max_power_kw:g} kW {charger.get_power_type_display()} / {charger.connector_type}' for charger in chargers],
 		})
 	all_stations = ChargingStation.objects.filter(is_published=True)
 	return render(request, 'charging/station_list.html', {
@@ -60,6 +65,8 @@ def station_list(request):
 		'cities': all_stations.values_list('city', flat=True).distinct().order_by('city'),
 		'selected_city': city,
 		'selected_status': status,
+		'site_types': ChargingStation.SiteType.choices,
+		'selected_site_type': site_type,
 		'charger_statuses': Charger.Status.choices,
 		'map_data': map_data,
 	})

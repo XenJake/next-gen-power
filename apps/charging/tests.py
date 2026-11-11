@@ -10,6 +10,7 @@ class ChargingFlowTests(TestCase):
 	def setUp(self):
 		self.station = ChargingStation.objects.create(
 			name='Test Station', slug='test-station', address='1 Test Road',
+			site_type=ChargingStation.SiteType.MALL,
 			city='Accra', latitude='5.603700', longitude='-0.187000', is_published=True,
 		)
 		self.charger = Charger.objects.create(
@@ -54,7 +55,9 @@ class ChargingFlowTests(TestCase):
 		self.assertEqual(response.json()['status'], Charger.Status.AVAILABLE)
 
 	def test_station_city_and_charger_status_filters(self):
-		response = self.client.get(reverse('charging:station_list'), {'city': 'Accra', 'status': 'available'})
+		response = self.client.get(reverse('charging:station_list'), {
+			'city': 'Accra', 'status': 'available', 'site_type': ChargingStation.SiteType.MALL,
+		})
 		self.assertContains(response, 'Test Station')
 		self.assertContains(response, 'station-map-data')
 		filtered_out = self.client.get(reverse('charging:station_list'), {'city': 'Accra', 'status': 'offline'})

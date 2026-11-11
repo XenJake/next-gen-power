@@ -4,6 +4,20 @@
   color: #8a3028;
 }
 
+.charger-type-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.charger-type-summary span {
+  padding: 5px 8px;
+  background: #e9f4f3;
+  color: #145c58;
+  font: 700 10px/1.2 var(--font-display);
+}
+
 @media (max-width: 680px) {
   .benefit-grid,
   .steps-grid {

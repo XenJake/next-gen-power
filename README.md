@@ -44,7 +44,7 @@ python manage.py test
 
 Open http://127.0.0.1:8000/ for the website, http://127.0.0.1:8000/admin/ for Django administration, and http://127.0.0.1:8000/operations/ for the staff operations overview. Grant the staff account the `charging | charging session | Can view charging session` permission to use the operations overview.
 
-`seed_demo_content` adds three clearly labeled BYD examples and four illustrative station points in Accra, Tema, Kumasi and Cape Coast. Prices, specifications, photos, coordinates and charger statuses are demonstrations, not live quotations or operating locations. Add verified manufacturers, vehicle listings and photos through Django admin. Add stations and chargers there as well; only records marked published appear publicly. Charger availability currently reflects the latest stored status. Live availability requires a selected and implemented charger-controller adapter.
+`seed_demo_content` adds three clearly labeled BYD examples, five long-dwell host venues (Accra Mall, West Hills Mall, Atlantic Mall, Labadi Beach Hotel and One Airport Square) with 10 x 22 kW Type 2 AC chargers each, and five 88 kW CCS2 DC chargers split 3 near Suhum and 2 near Winneba. These are illustrative host-site locations and charger states, not deployment commitments or live availability. Vehicle prices/specifications/photos and station coordinates are demonstrations, not quotations or proof of inventory/equipment. Add confirmed vehicles, host agreements, station assets and charger records through Django admin before representing any site as operational. Only published records appear publicly. Live availability requires a selected and implemented charger-controller adapter.
 
 ## Database configuration
 

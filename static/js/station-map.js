@@ -29,14 +29,18 @@
       const popup = document.createElement('div');
       const title = document.createElement('strong');
       title.textContent = station.name;
+      const type = document.createElement('p');
+      type.textContent = station.site_type;
       const address = document.createElement('p');
       address.textContent = station.address;
       const state = document.createElement('p');
       state.textContent = `${station.available} available of ${station.charger_count} chargers`;
+      const equipment = document.createElement('p');
+      equipment.textContent = Array.from(new Set(station.equipment)).join(', ');
       const link = document.createElement('a');
       link.href = station.url;
       link.textContent = 'Station details';
-      popup.append(title, address, state, link);
+      popup.append(title, type, address, state, equipment, link);
       if (station.is_demo) {
         const demo = document.createElement('small');
         demo.textContent = 'Demonstration location';

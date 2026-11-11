@@ -1,0 +1,12 @@
+{% load static %}
+<footer class="site-footer">
+  <div class="container footer-main">
+    <div class="footer-brand-block">
+      <a class="brand brand-inverse" href="{% url 'core:home' %}"><img src="{% static 'images/brand-mark.svg' %}" alt="" width="38" height="38"><span>NEXT GEN <strong>POWER</strong></span></a>
+      <p>Electric vehicles and dependable charging infrastructure, built for Ghana's next journey.</p>
+    </div>
+    <div class="footer-column"><h2>Explore</h2><a href="{% url 'vehicles:catalogue' %}">Vehicles</a><a href="{% url 'charging:station_list' %}">Charging stations</a><a href="{% url 'charging:how_it_works' %}">Charging and payments</a><a href="{% url 'core:sustainability' %}">Sustainability</a></div>
+    <div class="footer-column"><h2>Company</h2><a href="{% url 'core:about' %}">About us</a><a href="{% url 'core:contact' %}">Contact</a><a href="{% url 'login' %}">Staff sign in</a></div>
+  </div>
+  <div class="container footer-bottom"><span>&copy; {% now "Y" %} NEXT GEN POWER. Ghana.</span><span>Electric mobility, made practical.</span></div>
+</footer>

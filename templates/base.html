@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="NEXT GEN POWER connects Ghana to electric mobility through trusted EV retail and charging infrastructure.">
+    <meta name="theme-color" content="#102d3a">
+    <title>{% block title %}NEXT GEN POWER | Electric mobility, connected{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/brand-mark.svg' %}" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    <link rel="stylesheet" href="{% static 'css/public-pages.css' %}">
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    {% include 'includes/header.html' %}
+    <main id="main-content">
+      {% include 'includes/messages.html' %}
+      {% block content %}{% endblock %}
+    </main>
+    {% include 'includes/footer.html' %}
+    <script src="{% static 'js/site.js' %}" defer></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

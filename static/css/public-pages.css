@@ -1,0 +1,35 @@
+.status-out_of_service,
+.status-maintenance {
+  background: #fbe8e6;
+  color: #8a3028;
+}
+
+@media (max-width: 680px) {
+  .benefit-grid,
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sustainability-inner,
+  .map-panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .filter-form label {
+    flex: 1 1 42%;
+  }
+
+  .filter-form .button {
+    flex: 1 1 auto;
+  }
+
+  .demo-disclosure {
+    display: grid;
+    gap: 4px;
+  }
+
+  .charging-map {
+    height: 360px;
+  }
+}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}NEXT GEN POWER | Electric mobility, connected{% endblock %}
+{% block content %}
+<section class="home-hero">
+  <div class="hero-image" role="img" aria-label="Electric vehicle on a modern road"></div>
+  <div class="container hero-content">
+    <p class="eyebrow">Ghana's electric mobility partner</p>
+    <h1>Move forward.<br><span>Power the journey.</span></h1>
+    <p class="hero-lede">Trusted electric vehicles. Convenient charging. One connected experience, designed around how Ghana moves.</p>
+    <div class="button-row"><a class="button button-light" href="{% url 'vehicles:catalogue' %}">Explore electric vehicles <span aria-hidden="true">&#8594;</span></a><a class="button button-outline" href="{% url 'charging:station_list' %}">Find a charging station</a></div>
+    <div class="hero-index"><span>01</span><span class="hero-index-rule"></span><span>EV retail &amp; charging network</span></div>
+  </div>
+  <div class="hero-side-label">NEXT GEN POWER / GHANA</div>
+</section>
+<section class="section section-intro">
+  <div class="container intro-grid">
+    <div><p class="eyebrow eyebrow-dark">A practical path to electric</p><h2>Everything you need to make the switch.</h2></div>
+    <div><p class="lead-copy">We bring established electric vehicle brands and a growing charging network together, helping drivers and businesses take their next step with confidence.</p><a class="text-link" href="{% url 'core:about' %}">Get to know us <span aria-hidden="true">&#8594;</span></a></div>
+  </div>
+</section>
+<section class="section section-pale">
+  <div class="container">
+    <div class="section-heading"><div><p class="eyebrow eyebrow-dark">Our services</p><h2>One partner. Two ways forward.</h2></div></div>
+    <div class="service-grid">
+      <a class="service-panel service-vehicles" href="{% url 'vehicles:catalogue' %}"><div><span class="service-number">01 / VEHICLES</span><h3>Find your next electric vehicle.</h3><p>Browse vehicles from established global manufacturers, with clear specifications and direct purchase enquiries.</p><span class="service-link">Browse vehicles <b aria-hidden="true">&#8594;</b></span></div></a>
+      <a class="service-panel service-charging" href="{% url 'charging:station_list' %}"><div><span class="service-number">02 / CHARGING</span><h3>Charge with confidence.</h3><p>Locate a station, check connector availability and start a charging payment from the charger QR code.</p><span class="service-link">Explore the network <b aria-hidden="true">&#8594;</b></span></div></a>
+    </div>
+  </div>
+</section>
+<section class="section section-white">
+  <div class="container">
+    <div class="section-heading section-heading-row"><div><p class="eyebrow eyebrow-dark">Selected vehicles</p><h2>Browse the collection.</h2></div><a class="text-link" href="{% url 'vehicles:catalogue' %}">View all vehicles <span aria-hidden="true">&#8594;</span></a></div>
+    {% if featured_vehicles %}<div class="vehicle-grid">{% for vehicle in featured_vehicles %}{% include 'vehicles/includes/vehicle_card.html' with vehicle=vehicle %}{% endfor %}</div>{% else %}<div class="empty-state"><p>Our current vehicle selection is being prepared.</p><a class="text-link" href="{% url 'core:contact' %}">Ask about incoming vehicles <span aria-hidden="true">&#8594;</span></a></div>{% endif %}
+  </div>
+</section>
+<section class="network-band"><div class="container network-band-inner"><div><p class="eyebrow">Charging across Ghana</p><h2>Closer to the next charge.</h2><p>Our charging network is designed for daily movement and longer trips, with station details and charger status available online.</p></div><a class="button button-light" href="{% url 'charging:station_list' %}">Explore the network <span aria-hidden="true">&#8594;</span></a></div></section>
+<section class="section section-white"><div class="container"><div class="section-heading"><p class="eyebrow eyebrow-dark">Make the move</p><h2>Electric mobility that works for everyday life.</h2></div><div class="benefit-grid"><article><span>01</span><h3>Lower running costs</h3><p>Electric drivetrains can reduce routine maintenance and fuel costs. Your actual savings depend on how, where and what you drive.</p></article><article><span>02</span><h3>Quiet, responsive drive</h3><p>Enjoy smooth, immediate power delivery and a quieter cabin for daily trips and longer journeys.</p></article><article><span>03</span><h3>More ways to power up</h3><p>Charge at home or use public stations along the way as Ghana's electric infrastructure expands.</p></article></div></div></section>
+<section class="sustainability-band"><div class="container sustainability-inner"><div><p class="eyebrow">Sustainability</p><h2>Build the cleaner energy network alongside the vehicles.</h2><p>Our long-term strategy includes solar-powered charging locations and battery energy storage, developed with measured site data and transparent progress.</p></div><a class="button button-light" href="{% url 'core:sustainability' %}">Our sustainability approach <span aria-hidden="true">&#8594;</span></a></div></section>
+<section class="section section-pale"><div class="container callout-band"><div><p class="eyebrow eyebrow-dark">Talk to NEXT GEN POWER</p><h2>Have a question or a partnership idea?</h2></div><a class="button button-dark" href="{% url 'core:contact' %}">Contact our team <span aria-hidden="true">&#8594;</span></a></div></section>
+{% endblock %}

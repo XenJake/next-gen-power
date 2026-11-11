@@ -1,0 +1,19 @@
+{% load static %}
+<header class="site-header" data-header>
+  <div class="container nav-row">
+    <a class="brand" href="{% url 'core:home' %}" aria-label="NEXT GEN POWER home">
+      <img src="{% static 'images/brand-mark.svg' %}" alt="" width="38" height="38">
+      <span>NEXT GEN <strong>POWER</strong></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open navigation"><span></span><span></span></button>
+    <nav id="primary-nav" class="primary-nav" aria-label="Main navigation">
+      <a href="{% url 'vehicles:catalogue' %}">Electric vehicles</a>
+      <a href="{% url 'charging:station_list' %}">Charging network</a>
+      <a href="{% url 'charging:how_it_works' %}">How charging works</a>
+      <a href="{% url 'core:sustainability' %}">Sustainability</a>
+      <a href="{% url 'core:about' %}">About</a>
+      {% if request.user.is_staff %}<a class="nav-staff" href="{% url 'operations:dashboard' %}">Operations</a>{% endif %}
+      <a class="nav-cta" href="{% url 'core:contact' %}">Talk to our team <span aria-hidden="true">&#8599;</span></a>
+    </nav>
+  </div>
+</header>

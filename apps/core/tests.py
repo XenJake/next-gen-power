@@ -37,5 +37,6 @@ class ChargingDemoSeedTests(TestCase):
 		self.assertTrue(all(station.chargers.count() == 10 for station in mall_hotel_office))
 		self.assertEqual(Charger.objects.filter(station__in=mall_hotel_office, power_type=Charger.PowerType.AC, connector_type='Type 2', max_power_kw=22).count(), 50)
 		self.assertEqual(Charger.objects.filter(station__in=highway_sites, power_type=Charger.PowerType.DC, connector_type='CCS2', max_power_kw=88).count(), 5)
-		self.assertEqual(highway_sites.get(slug='demo-accra-kumasi-suhum').chargers.count(), 3)
-		self.assertEqual(highway_sites.get(slug='demo-accra-cape-coast-winneba').chargers.count(), 2)
+		self.assertEqual(highway_sites.get(slug='demo-accra-kumasi-pokuase').chargers.count(), 3)
+		self.assertEqual(highway_sites.get(slug='demo-accra-cape-coast-mallam').chargers.count(), 2)
+		self.assertTrue(all(city == 'Accra' for city in highway_sites.values_list('city', flat=True)))

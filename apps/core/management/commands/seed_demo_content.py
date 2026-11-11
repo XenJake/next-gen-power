@@ -87,16 +87,16 @@ class Command(BaseCommand):
         ]
         highway_sites = [
             {
-                'name': 'Demo Accra-Kumasi Highway Hub - Suhum', 'slug': 'demo-accra-kumasi-suhum',
-                'address': 'Demonstration service area near Suhum on the Accra-Kumasi corridor',
-                'city': 'Suhum', 'region': 'Eastern', 'site_type': ChargingStation.SiteType.HIGHWAY,
-                'latitude': Decimal('6.0358850'), 'longitude': Decimal('-0.4552751'), 'dc_chargers': 3,
+                'name': 'Demo Accra-Kumasi Highway Hub - Pokuase', 'slug': 'demo-accra-kumasi-pokuase',
+                'address': 'Demonstration service area near Pokuase on the Accra-Kumasi corridor',
+                'city': 'Accra', 'region': 'Greater Accra', 'site_type': ChargingStation.SiteType.HIGHWAY,
+                'latitude': Decimal('5.6892131'), 'longitude': Decimal('-0.2826359'), 'dc_chargers': 3,
             },
             {
-                'name': 'Demo Accra-Cape Coast Highway Hub - Winneba', 'slug': 'demo-accra-cape-coast-winneba',
-                'address': 'Demonstration service area near Winneba on the Accra-Cape Coast corridor',
-                'city': 'Winneba', 'region': 'Central', 'site_type': ChargingStation.SiteType.HIGHWAY,
-                'latitude': Decimal('5.3500600'), 'longitude': Decimal('-0.6213400'), 'dc_chargers': 2,
+                'name': 'Demo Accra-Cape Coast Highway Hub - Mallam', 'slug': 'demo-accra-cape-coast-mallam',
+                'address': 'Demonstration service area near Mallam Junction on the Accra-Cape Coast corridor',
+                'city': 'Accra', 'region': 'Greater Accra', 'site_type': ChargingStation.SiteType.HIGHWAY,
+                'latitude': Decimal('5.5708287'), 'longitude': Decimal('-0.2854341'), 'dc_chargers': 2,
             },
         ]
         status_cycle = [
@@ -147,10 +147,13 @@ class Command(BaseCommand):
                 )
 
         ChargingStation.objects.filter(
-            slug__in=['demo-accra-central', 'demo-tema-roadside', 'demo-kumasi-hub', 'demo-cape-coast-point'],
+            slug__in=[
+                'demo-accra-central', 'demo-tema-roadside', 'demo-kumasi-hub', 'demo-cape-coast-point',
+                'demo-accra-kumasi-suhum', 'demo-accra-cape-coast-winneba',
+            ],
             is_demo=True,
         ).update(is_published=False)
 
         self.stdout.write(self.style.SUCCESS('Loaded 3 illustrative BYD listings and 7 illustrative charging host sites.'))
-        self.stdout.write('Demo inventory: 50 x 22 kW Type 2 AC chargers, 3 x 88 kW CCS2 chargers near Suhum and 2 x 88 kW CCS2 chargers near Winneba.')
+        self.stdout.write('Demo inventory: 50 x 22 kW Type 2 AC chargers and 5 x 88 kW CCS2 DC chargers on two Accra highway approaches (3 Pokuase / 2 Mallam).')
         self.stdout.write('All prices, vehicle details, coordinates, locations and charger statuses are illustrative only.')

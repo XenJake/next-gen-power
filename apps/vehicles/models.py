@@ -34,6 +34,10 @@ class Vehicle(models.Model):
 	model_year = models.PositiveSmallIntegerField(null=True, blank=True)
 	body_style = models.CharField(max_length=80, choices=BodyStyle.choices, blank=True)
 	description = models.TextField()
+	included_accessories = models.TextField(
+		blank=True,
+		help_text='Supplier-verified items included with this vehicle. Leave blank until confirmed.',
+	)
 	price = models.DecimalField(max_digits=13, decimal_places=2, null=True, blank=True)
 	currency = models.CharField(max_length=3, default='GHS')
 	availability = models.CharField(max_length=16, choices=Availability.choices, default=Availability.ENQUIRE)
@@ -63,9 +67,15 @@ class Vehicle(models.Model):
 
 class VehicleImage(models.Model):
 	vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='images')
-	image = models.ImageField(upload_to='vehicles/')
+	image = models.ImageField(upload_to='vehicles/', blank=True)
+	image_url = models.URLField(max_length=1000, blank=True)
+	local_path = models.CharField(max_length=255, blank=True)
 	alt_text = models.CharField(max_length=180)
 	position = models.PositiveSmallIntegerField(default=0)
+	source_url = models.URLField(max_length=1000, blank=True)
+	credit = models.CharField(max_length=180, blank=True)
+	license_name = models.CharField(max_length=80, blank=True)
+	license_url = models.URLField(max_length=500, blank=True)
 
 	class Meta:
 		ordering = ['position', 'id']

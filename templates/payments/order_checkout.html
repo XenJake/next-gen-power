@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Order checkout | NEXT GEN POWER{% endblock %}
+{% block content %}
+<section class="section section-pale checkout-section"><div class="checkout-panel">
+  <p class="eyebrow eyebrow-dark">Mock order checkout</p><h1>Review your order.</h1>
+  <div class="notice notice-warning"><strong>Test mode — no money will be charged.</strong><p>Prices shown are estimates. This simulated payment does not reserve a vehicle, arrange delivery or installation, or activate any equipment.</p></div>
+  <div class="payment-summary">
+    {% if order.vehicle_name %}<div><span>Vehicle</span><strong>{{ order.vehicle_name }}</strong></div><div><span>Vehicle price estimate</span><strong>GHS {{ order.vehicle_amount|floatformat:2|intcomma }}</strong></div>{% endif %}
+    {% if order.seasonal_discount %}<div><span>{{ order.seasonal_deal_name }} ({{ order.seasonal_discount_percent }}%)</span><strong>− GHS {{ order.seasonal_discount|floatformat:2|intcomma }}</strong></div>{% endif %}
+    {% if order.charger_name %}<div><span>Home charger (hardware only)</span><strong>{{ order.charger_name }} · GHS {{ order.charger_amount|floatformat:2|intcomma }}</strong></div>{% endif %}
+    {% if order.bundle_discount %}<div><span>Vehicle + charger package discount ({{ order.bundle_discount_percent }}%)</span><strong>− GHS {{ order.bundle_discount|floatformat:2|intcomma }}</strong></div>{% endif %}
+    <div><span>Customer</span><strong>{{ order.customer_name }} · {{ order.customer_email }}</strong></div>
+    <div class="payment-total"><span>Total (GHS)</span><strong>GHS {{ order.amount|floatformat:2|intcomma }}</strong></div>
+  </div>
+  {% if provider_ready %}<form method="post">{% csrf_token %}<fieldset class="payment-methods"><legend>{{ form.method.label }}</legend>{{ form.method }}{{ form.method.errors }}</fieldset><button class="button button-dark button-full" type="submit">Continue to simulated payment</button></form>{% else %}<div class="notice notice-warning"><strong>Mock checkout is unavailable.</strong><p>Order payments are intentionally limited to the configured mock provider; no real-payment integration is enabled.</p></div>{% endif %}
+  <p class="fine-print">GHS car estimates use the configured reference exchange rate at order creation. Installation is not included in charger prices.</p>
+</div></section>
+{% endblock %}

@@ -110,7 +110,7 @@ def start_session(request, public_id):
 		return redirect('charging:charger_qr', public_id=public_id)
 	charger = get_object_or_404(Charger.objects.select_related('station'), public_id=public_id, station__is_published=True)
 	if not settings.PAYMENT_PROVIDER_CLASS:
-		messages.error(request, 'Online charging payments are not enabled. No payment or charging session was created.')
+		messages.error(request, 'Charging payments are not enabled. No payment or charging session was created.')
 		return redirect('charging:charger_qr', public_id=public_id)
 	form = StartChargingForm(request.POST)
 	if not form.is_valid():
@@ -134,7 +134,6 @@ def start_session(request, public_id):
 		)
 		Payment.objects.create(
 			session=session,
-			method=form.cleaned_data['method'],
 			amount=amount,
 			currency='GHS',
 		)

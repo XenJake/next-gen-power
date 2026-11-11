@@ -11,8 +11,9 @@ from django.views.decorators.http import require_POST
 
 from apps.charging.models import ChargingSession, Charger
 
+from .forms import PAYMENT_METHOD_CHOICES, CheckoutMethodForm
 from .models import Payment
-from .providers import get_payment_provider
+from .providers import MockPaymentProvider, get_payment_provider
 
 logger = logging.getLogger(__name__)
 
@@ -54,11 +55,53 @@ def checkout(request, public_id):
 		return render(request, 'payments/result.html', {'payment': payment})
 	provider = get_payment_provider()
 	if not provider:
-		return render(request, 'payments/checkout.html', {'payment': payment, 'provider_ready': False}, status=503)
+		return render(request, 'payments/checkout.html', {
+			'payment': payment,
+			'provider_ready': False,
+			'form': CheckoutMethodForm(),
+		}, status=503)
+	form = CheckoutMethodForm(request.POST or None)
 	if request.method == 'POST':
-		checkout_url = provider.create_checkout(payment, request)
-		return redirect(checkout_url)
-	return render(request, 'payments/checkout.html', {'payment': payment, 'provider_ready': True})
+		if form.is_valid():
+			payment.method = form.cleaned_data['method']
+			payment.save(update_fields=['method', 'updated_at'])
+			return redirect(provider.create_checkout(payment, request))
+	return render(request, 'payments/checkout.html', {
+		'payment': payment,
+		'provider_ready': True,
+		'is_mock': isinstance(provider, MockPaymentProvider),
+		'form': form,
+	})
+
+
+def mock_checkout(request, public_id):
+	provider = get_payment_provider()
+	if not isinstance(provider, MockPaymentProvider):
+		return HttpResponse('Mock checkout is not enabled.', status=404)
+	payment = get_object_or_404(
+		Payment.objects.select_related('session__charger__station'),
+		public_id=public_id,
+	)
+	if payment.status != Payment.Status.PENDING:
+		return redirect('payments:checkout', public_id=payment.public_id)
+	if payment.method not in dict(PAYMENT_METHOD_CHOICES):
+		return redirect('payments:checkout', public_id=payment.public_id)
+	if request.method == 'POST':
+		with transaction.atomic():
+			payment = Payment.objects.select_for_update().select_related('session').get(pk=payment.pk)
+			session = ChargingSession.objects.select_for_update().get(pk=payment.session_id)
+			if payment.status != Payment.Status.PENDING:
+				return redirect('payments:checkout', public_id=payment.public_id)
+			if session.status != ChargingSession.Status.PENDING_PAYMENT:
+				return HttpResponse('This charging session is no longer awaiting payment.', status=409)
+			payment.status = Payment.Status.SUCCEEDED
+			payment.provider = 'mock'
+			payment.provider_reference = provider.create_mock_reference()
+			payment.save(update_fields=['status', 'provider', 'provider_reference', 'updated_at'])
+			session.status = ChargingSession.Status.PAID_PENDING_AUTH
+			session.save(update_fields=['status', 'updated_at'])
+		return redirect('payments:checkout', public_id=payment.public_id)
+	return render(request, 'payments/mock_checkout.html', {'payment': payment})
 
 
 @csrf_exempt

@@ -1,0 +1,15 @@
+<aside class="ops-sidebar" aria-label="Operations navigation">
+  <a class="ops-brand" href="{% url 'operations:dashboard' %}"><span class="ops-brand-mark">N</span><span>NEXT GEN <b>POWER</b><small>NETWORK OPERATIONS</small></span></a>
+  <nav class="ops-nav">
+    <a class="{% if section == 'overview' %}active{% endif %}" href="{% url 'operations:dashboard' %}"><span>01</span>Overview</a>
+    {% if perms.charging.view_chargingstation %}<a class="{% if section == 'stations' %}active{% endif %}" href="{% url 'operations:stations' %}"><span>02</span>Locations</a>{% endif %}
+    {% if perms.charging.view_charger %}<a class="{% if section == 'chargers' %}active{% endif %}" href="{% url 'operations:chargers' %}"><span>03</span>Charger fleet</a>{% endif %}
+    {% if perms.vehicles.view_vehicle %}<a class="{% if section == 'vehicles' %}active{% endif %}" href="{% url 'operations:vehicles' %}"><span>04</span>Vehicle inventory</a>{% endif %}
+    {% if perms.charging.view_chargingsession %}<a class="{% if section == 'sessions' %}active{% endif %}" href="{% url 'operations:sessions' %}"><span>05</span>Sessions</a>{% endif %}
+    {% if perms.payments.view_payment %}<a class="{% if section == 'payments' %}active{% endif %}" href="{% url 'operations:payments' %}"><span>06</span>Payments</a>{% endif %}
+    {% if perms.vehicles.view_vehicleenquiry %}<a class="{% if section == 'enquiries' %}active{% endif %}" href="{% url 'operations:enquiries' %}"><span>07</span>Vehicle enquiries</a>{% endif %}
+    {% if perms.operations.view_faultreport %}<a class="{% if section == 'faults' %}active{% endif %}" href="{% url 'operations:faults' %}"><span>08</span>Faults</a>{% endif %}
+    {% if perms.operations.view_maintenancerecord %}<a class="{% if section == 'maintenance' %}active{% endif %}" href="{% url 'operations:maintenance' %}"><span>09</span>Maintenance</a>{% endif %}
+  </nav>
+  <div class="ops-sidebar-bottom"><span class="staff-indicator"></span><span>{{ request.user.get_username }}<small>STAFF ACCESS</small></span><a href="{% url 'core:home' %}" aria-label="Return to public site">↗</a></div>
+</aside>

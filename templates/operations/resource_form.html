@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title }} | NEXT GEN POWER Operations{% endblock %}
+{% block content %}
+<section class="ops-app">
+  {% include 'operations/includes/navigation.html' %}
+  <div class="ops-main">
+    <header class="ops-topbar"><div><span class="ops-breadcrumb">OPERATIONS / {{ section|upper }} / {% if is_edit %}EDIT{% else %}NEW{% endif %}</span><h1>{{ page_title }}</h1><p>Changes are recorded in the NEXT GEN POWER operations database.</p></div><div class="ops-topbar-actions"><span class="ops-user">{{ request.user.get_username }}</span></div></header>
+    <div class="ops-content">
+      <a class="ops-back-link" href="{% if section == 'vehicles' %}{% url 'operations:vehicles' %}{% elif section == 'stations' %}{% url 'operations:stations' %}{% elif section == 'chargers' %}{% url 'operations:chargers' %}{% elif section == 'faults' %}{% url 'operations:faults' %}{% else %}{% url 'operations:maintenance' %}{% endif %}">&larr; Back to {{ section }}</a>
+      <form class="ops-form-panel" method="post" enctype="multipart/form-data">{% csrf_token %}
+        {% if form.non_field_errors %}<div class="ops-form-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="ops-form-grid">{% for field in form %}<div class="ops-field{% if field.field.widget.input_type == 'checkbox' %} ops-field-check{% endif %}{% if field.name == 'description' or field.name == 'amenities' or field.name == 'notes' or field.name == 'message' %} ops-field-wide{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}</label>{{ field }}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}{% for error in field.errors %}<small class="ops-field-error">{{ error }}</small>{% endfor %}</div>{% endfor %}</div>
++        <div class="ops-form-actions"><button class="ops-button ops-button-teal" type="submit">{% if is_edit %}Save changes{% else %}Create record{% endif %}</button><a class="ops-button ops-button-light" href="{% if section == 'vehicles' %}{% url 'operations:vehicles' %}{% elif section == 'stations' %}{% url 'operations:stations' %}{% elif section == 'chargers' %}{% url 'operations:chargers' %}{% elif section == 'faults' %}{% url 'operations:faults' %}{% else %}{% url 'operations:maintenance' %}{% endif %}">Cancel</a></div>
++      </form>
++    </div>
++  </div>
++</section>
++{% endblock %}

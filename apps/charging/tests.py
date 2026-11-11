@@ -28,10 +28,16 @@ class ChargingFlowTests(TestCase):
 		self.assertEqual(response['Content-Type'], 'image/svg+xml')
 		self.assertIn(b'<svg', response.content)
 
+	def test_charger_qr_page_collects_amount_before_payment_method_selection(self):
+		response = self.client.get(reverse('charging:charger_qr', args=[self.charger.public_id]))
+		self.assertContains(response, 'Continue to payment options')
+		self.assertContains(response, 'Scan to open this charger and payment portal')
+		self.assertNotContains(response, 'name="method"')
+
 	@override_settings(PAYMENT_PROVIDER_CLASS='apps.payments.tests.TestPaymentProvider')
 	def test_qr_start_creates_pending_records_without_authorizing_charger(self):
 		response = self.client.post(reverse('charging:start_session', args=[self.charger.public_id]), {
-			'amount': '25.00', 'method': 'mobile_money',
+			'amount': '25.00',
 		})
 		session = ChargingSession.objects.get()
 		payment = Payment.objects.get(session=session)
@@ -41,9 +47,10 @@ class ChargingFlowTests(TestCase):
 		self.assertEqual(payment.status, Payment.Status.PENDING)
 		self.assertEqual(self.charger.status, Charger.Status.AVAILABLE)
 
+	@override_settings(PAYMENT_PROVIDER_CLASS='')
 	def test_qr_start_does_not_create_records_without_payment_provider(self):
 		response = self.client.post(reverse('charging:start_session', args=[self.charger.public_id]), {
-			'amount': '25.00', 'method': 'mobile_money',
+			'amount': '25.00',
 		})
 		self.assertEqual(response.status_code, 302)
 		self.assertEqual(ChargingSession.objects.count(), 0)

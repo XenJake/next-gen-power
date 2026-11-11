@@ -10,6 +10,7 @@
       <a href="{% url 'charging:station_list' %}">Charging network</a>
       <a href="{% url 'charging:how_it_works' %}">How charging works</a>
       <a href="{% url 'vehicles:catalogue' %}">Electric vehicles</a>
+      <a href="{% url 'payments:charger_store' %}">Home chargers</a>
       <a href="{% url 'core:sustainability' %}">Sustainability</a>
       <a href="{% url 'core:about' %}">About</a>
       {% if request.user.is_staff %}<a class="nav-staff" href="{% url 'operations:dashboard' %}">Operations</a>{% endif %}

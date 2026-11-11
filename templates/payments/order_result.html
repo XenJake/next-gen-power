@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Mock order recorded | NEXT GEN POWER{% endblock %}
+{% block content %}
+<section class="section section-pale checkout-section"><div class="checkout-panel">
+  <p class="eyebrow eyebrow-dark">Test order</p><h1>Mock checkout recorded.</h1>
+  <div class="notice notice-success"><strong>No real payment was taken.</strong><p>This is a test record only. It does not reserve the vehicle, confirm inventory, or schedule delivery or installation.</p></div>
+  <div class="payment-summary"><div><span>Order reference</span><strong>{{ order.public_id }}</strong></div><div><span>Items</span><strong>{{ order.vehicle_name }}{% if order.vehicle_name and order.charger_name %} + {% endif %}{{ order.charger_name }}</strong></div><div><span>Mock reference</span><strong>{{ order.mock_reference }}</strong></div><div><span>Status</span><strong>{{ order.get_status_display }}</strong></div><div class="payment-total"><span>Simulated total (GHS)</span><strong>GHS {{ order.amount }}</strong></div></div>
+  <a class="button button-dark" href="{% url 'vehicles:catalogue' %}">Back to vehicles</a>
+</div></section>
+{% endblock %}

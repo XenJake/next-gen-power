@@ -10,13 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from decimal import Decimal
 
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-env = environ.Env(DEBUG=(bool, False))
+env = environ.Env(
+    DEBUG=(bool, False),
+    DATABASE_URL=(str, ''),
+    ALLOWED_HOSTS=(list, ['127.0.0.1', 'localhost']),
+    SECURE_SSL_REDIRECT=(bool, False),
+)
 environ.Env.read_env(BASE_DIR / '.env')
 
 
@@ -29,9 +36,22 @@ if not SECRET_KEY:
     raise environ.ImproperlyConfigured('Set DJANGO_SECRET_KEY in the environment or .env file.')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
+DEFAULT_ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app']
+if os.environ.get('VERCEL_URL'):
+    DEFAULT_ALLOWED_HOSTS.append(os.environ['VERCEL_URL'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=DEFAULT_ALLOWED_HOSTS)
+CSRF_TRUSTED_ORIGINS = env.list(
+    'CSRF_TRUSTED_ORIGINS',
+    default=[
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+        'https://localhost:8000',
+        'https://*.vercel.app',
+    ],
+)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -54,6 +74,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -135,16 +156,42 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-MEDIA_URL = '/media/'
+STORAGES = {
+    'default': {
+        'BACKEND': env('DEFAULT_FILE_STORAGE', default='django.core.files.storage.FileSystemStorage'),
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
+
+MEDIA_URL = env('MEDIA_URL', default='/media/')
 MEDIA_ROOT = BASE_DIR / 'media'
+
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+if AWS_STORAGE_BUCKET_NAME and AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+    STORAGES['default'] = {'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage'}
+    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-1')
+    AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default='')
+    AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='')
+    AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public-read')
+    AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
+    AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=False)
+    if not MEDIA_URL.startswith('http'):
+        MEDIA_URL = env('MEDIA_URL', default=f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'core:home'
 LOGOUT_REDIRECT_URL = 'core:home'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-PAYMENT_PROVIDER = env('PAYMENT_PROVIDER', default='')
-PAYMENT_PROVIDER_CLASS = env('PAYMENT_PROVIDER_CLASS', default='')
+PAYMENT_PROVIDER = env('PAYMENT_PROVIDER', default='mock') or ('mock' if DEBUG else '')
+PAYMENT_PROVIDER_CLASS = env(
+    'PAYMENT_PROVIDER_CLASS',
+    default='apps.payments.providers.MockPaymentProvider',
+) or ('apps.payments.providers.MockPaymentProvider' if DEBUG else '')
 PAYMENT_API_KEY = env('PAYMENT_API_KEY', default='')
 PAYMENT_WEBHOOK_SECRET = env('PAYMENT_WEBHOOK_SECRET', default='')
 CHARGER_API_BASE_URL = env('CHARGER_API_BASE_URL', default='')
@@ -153,6 +200,9 @@ CHARGER_CONTROLLER_CLASS = env('CHARGER_CONTROLLER_CLASS', default='')
 
 if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=31536000)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
+    SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD', default=True)
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
@@ -163,3 +213,10 @@ if not DEBUG:
 
 EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='NEXT GEN POWER <noreply@nextgenpower.gh>')
+USD_GHS_EXCHANGE_RATE = Decimal(env('USD_GHS_EXCHANGE_RATE', default='11.70343'))
+USD_GHS_RATE_AS_OF = env('USD_GHS_RATE_AS_OF', default='2026-11-11')
+BUNDLE_DISCOUNT_PERCENT = Decimal(env('BUNDLE_DISCOUNT_PERCENT', default='5.00'))
+if USD_GHS_EXCHANGE_RATE <= 0:
+    raise environ.ImproperlyConfigured('USD_GHS_EXCHANGE_RATE must be greater than zero.')
+if not Decimal('0') <= BUNDLE_DISCOUNT_PERCENT <= Decimal('100'):
+    raise environ.ImproperlyConfigured('BUNDLE_DISCOUNT_PERCENT must be between zero and 100.')

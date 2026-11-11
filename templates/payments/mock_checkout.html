@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Mock payment | NEXT GEN POWER{% endblock %}
+{% block content %}
+<section class="section section-pale checkout-section">
+  <div class="checkout-panel">
+    <p class="eyebrow eyebrow-dark">Mock payment</p>
+    <h1>Confirm simulated payment.</h1>
+    <div class="notice notice-warning">
+      <strong>Test mode — no money will be charged.</strong>
+      <p>This step records a simulated successful payment using {{ payment.get_method_display }}. It does not contact a mobile money network or card processor.</p>
+    </div>
+    <div class="payment-summary">
+      <div><span>Station</span><strong>{{ payment.session.charger.station.name }}</strong></div>
+      <div><span>Charger</span><strong>{{ payment.session.charger.charger_code }} · {{ payment.session.charger.connector_type }}</strong></div>
+      <div><span>Payment method</span><strong>{{ payment.get_method_display }}</strong></div>
+      <div class="payment-total"><span>Amount (GHS)</span><strong>{{ payment.currency }} {{ payment.amount|floatformat:2 }}</strong></div>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <button class="button button-dark button-full" type="submit">Simulate successful payment</button>
+    </form>
+    <p class="fine-print">No card number, PIN, or mobile money authorization code is collected in mock mode.</p>
+  </div>
+</section>
+{% endblock %}

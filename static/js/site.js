@@ -22,4 +22,43 @@
       menuToggle?.setAttribute('aria-expanded', 'false');
     });
   });
+
+  const gallery = document.querySelector('[data-gallery]');
+  const galleryDialog = document.querySelector('[data-gallery-dialog]');
+  const galleryButtons = [...(gallery?.querySelectorAll('[data-gallery-open]') ?? [])];
+  const galleryImage = galleryDialog?.querySelector('[data-gallery-viewer-image]');
+  const galleryCaption = galleryDialog?.querySelector('[data-gallery-viewer-caption]');
+
+  if (galleryDialog && galleryImage && galleryCaption && galleryButtons.length) {
+    let activePhoto = 0;
+
+    const showPhoto = (index) => {
+      activePhoto = (index + galleryButtons.length) % galleryButtons.length;
+      const button = galleryButtons[activePhoto];
+      galleryImage.src = button.dataset.fullSrc;
+      galleryImage.alt = button.dataset.alt ?? '';
+      galleryCaption.textContent = [
+        button.dataset.credit ? `Photo by ${button.dataset.credit}` : '',
+        button.dataset.license ?? '',
+      ].filter(Boolean).join(' · ');
+    };
+
+    galleryButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        showPhoto(index);
+        galleryDialog.showModal();
+      });
+    });
+
+    galleryDialog.querySelector('[data-gallery-close]')?.addEventListener('click', () => galleryDialog.close());
+    galleryDialog.querySelector('[data-gallery-previous]')?.addEventListener('click', () => showPhoto(activePhoto - 1));
+    galleryDialog.querySelector('[data-gallery-next]')?.addEventListener('click', () => showPhoto(activePhoto + 1));
+    galleryDialog.addEventListener('click', (event) => {
+      if (event.target === galleryDialog) galleryDialog.close();
+    });
+    galleryDialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') showPhoto(activePhoto - 1);
+      if (event.key === 'ArrowRight') showPhoto(activePhoto + 1);
+    });
+  }
 })();

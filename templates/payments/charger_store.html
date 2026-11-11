@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Home chargers | NEXT GEN POWER{% endblock %}
+{% block content %}
+<section class="page-hero page-hero-vehicles"><div class="container page-hero-content"><p class="eyebrow">Home charging</p><h1>Choose a home charger.</h1><p>Buy a charger on its own or add one to a vehicle order for a 5% package discount.</p></div></section>
+<section class="section section-white"><div class="container">
+  <div class="demo-disclosure"><strong>Before you order</strong><span>Prices are for charger hardware only. Installation is quoted separately after a compatibility review. Confirm the vehicle connector, electrical supply and installation requirements before purchase.</span></div>
+  <div class="charger-product-grid">
+    {% for charger in chargers %}<article class="charger-product-card"><p class="eyebrow eyebrow-dark">{{ charger.get_product_type_display }}</p><h2>{{ charger.name }}</h2><p>{{ charger.description }}</p><strong>GHS {{ charger.price|floatformat:2|intcomma }}</strong></article>{% endfor %}
+  </div>
+  {% if chargers %}<div class="section-heading"><p class="eyebrow eyebrow-dark">Order a charger</p><h2>Continue to mock checkout.</h2><p class="muted-copy">Choose your charger and enter your contact details. This demo checkout does not take payment or arrange installation.</p></div>
+  <form class="form-panel order-form-panel" method="post">{% csrf_token %}{% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}<div class="form-grid"><label class="field-wide">{{ form.charger_product.label }}{{ form.charger_product }}{{ form.charger_product.errors }}</label><label>{{ form.customer_name.label }}{{ form.customer_name }}{{ form.customer_name.errors }}</label><label>{{ form.customer_email.label }}{{ form.customer_email }}{{ form.customer_email.errors }}</label><label class="field-wide">{{ form.customer_phone.label }}{{ form.customer_phone }}{{ form.customer_phone.errors }}</label></div><button class="button button-dark" type="submit">Continue to mock checkout <span aria-hidden="true">&#8594;</span></button></form>
+  {% else %}<div class="empty-state"><h2>No home chargers are listed.</h2><p>Please contact our team for product information.</p></div>{% endif %}
+</div></section>
+{% endblock %}
